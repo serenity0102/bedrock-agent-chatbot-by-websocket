@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Agentic Investment Assistant</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            text-align: center;
+            padding: 20px;
+            background: #1a365d;
+            color: white;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .header h2 {
+            margin: 5px 0 0;
+            font-size: 16px;
+            font-weight: normal;
+            opacity: 0.9;
+        }
+
+        .main-container {
+            display: flex;
+            flex: 1;
+        }
+
+        .sidebar {
+            width: 300px;
+            background: #f8f9fa;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            overflow-y: auto;
+        }
+
+        .sidebar h3 {
+            color: #1a365d;
+            margin-top: 0;
+        }
+
+        .diagram-explanation {
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .architecture-image {
+            margin-top: 20px;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+
+        #chat-container {
+            padding-bottom: 150px;
+            flex: 1;
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            background: #f5f5f5;
+        }
+
+        #messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        .message {
+            margin: 10px 0;
+            padding: 10px 15px;
+            border-radius: 10px;
+            max-width: 80%;
+            white-space: pre-line;
+        }
+
+        .user-message {
+            background: #007bff;
+            color: white;
+            margin-left: auto;
+        }
+
+        .bot-message {
+            background: #e9ecef;
+            color: #212529;
+        }
+
+        /* Add to your existing style section */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal img {
+            max-width: 90%;
+            max-height: 90vh;
+            object-fit: contain;
+            cursor: zoom-out;
+        }
+
+        .architecture-image img {
+            cursor: zoom-in;
+        }
+
+        #reconnectButton {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+            /** display: none; **/
+        }
+
+        #reconnectButton:hover {
+            background: #218838;
+        }
+
+        #reconnectButton.show {
+            display: block;
+        }
+
+
+        #input-container {
+            position: fixed;
+            bottom: 0;
+            left: 300px;
+            right: 0;
+            padding: 20px;
+            background: white;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: center;
+        }
+
+        #messageInput {
+            width: 60%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            margin-right: 10px;
+            font-size: 16px;
+        }
+
+        #sendButton {
+            padding: 12px 25px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s;
+        }
+
+        #sendButton:hover {
+            background: #0056b3;
+        }
+
+        .status {
+            text-align: center;
+            padding: 10px;
+            color: #666;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Agentic Investment Assistant</h1>
+        <h2>Multi-Dimensional Analysis powered by Amazon Bedrock Agent and Nova</h2>
+    </div>
+    
+    <button id="reconnectButton">Reconnect</button>
+    
+    <div class="main-container">
+        <div class="sidebar">
+            <h3>System Architecture</h3>
+            <div class="architecture-image">
+                <img src="architecture.png" alt="I3 System Architecture" style="width: 100%; margin-top: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            </div>
+            
+            <div class="diagram-explanation">
+                <p>I3 processes user inputs (stock tickers) and generates detailed reports including price analysis, news analysis, and investment recommendations.</p>
+
+                <p>The I3 system consists of three main components:</p>
+                <p><strong>Stock Data Agent:</strong><br>
+                Retrieves real-time stock price data.</p>
+                <p><strong>Web Search Agent:</strong><br>
+                Gathers relevant news and market information using web search APIs.</p>
+                <p><strong>Financial Analyst Agent:</strong><br>
+                <p>Provides comprehensive investment recommendations based on the price history and market news.</p>
+
+            </div>
+        </div>
+        <div id="chat-container">
+            <div id="messages"></div>
+        </div>
+    </div>
+    <div id="input-container">
+        <input type="text" id="messageInput" placeholder="Type your message...">
+        <button id="sendButton" onclick="sendMessage()">Send</button>
+    </div>
+
+    <script>
+        // Original JavaScript code remains unchanged
+        ws = new WebSocket('wss://4exr42tsi2.execute-api.us-east-1.amazonaws.com/prod');
+
+        function initializeWebSocket() {
+            ws = new WebSocket('wss://4exr42tsi2.execute-api.us-east-1.amazonaws.com/prod');
+            /** if (ws) {
+                appendMessage('Connected to Agent', 'status');
+            } **/
+        }
+        
+        ws.onopen = function() {
+            appendMessage('Connected to Agent', 'status');
+        };
+
+        ws.onmessage = function(event) {
+            try {
+                const data = JSON.parse(event.data);
+                if (data.type === "intermediate" || data.type === "final") {
+                    appendMessage(data.content, 'bot-message');
+                }
+            } catch (e) {
+                appendMessage(event.data, 'bot-message');
+            }
+        };
+
+        ws.onclose = function() {
+            appendMessage('Disconnected from I3', 'status');
+            document.getElementById('reconnectButton').classList.add('show');
+        };
+
+        ws.onerror = function(error) {
+            appendMessage('Error: ' + error.message, 'status');
+        };
+
+        function sendMessage() {
+            const messageInput = document.getElementById('messageInput');
+            const message = messageInput.value;
+            
+            if (message.trim()) {
+                const payload = {
+                    action: 'sendmessage',
+                    message: message
+                };
+
+                ws.send(JSON.stringify(payload));
+                appendMessage(message, 'user-message');
+                messageInput.value = '';
+            }
+        }
+
+        function appendMessage(message, className) {
+            const messagesDiv = document.getElementById('messages');
+            const messageElement = document.createElement('div');
+            messageElement.className = `message ${className}`;
+            messageElement.textContent = message;
+            messagesDiv.appendChild(messageElement);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        document.getElementById('messageInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        document.getElementById('reconnectButton').addEventListener('click', function() {
+            if (ws) {
+                ws.close();
+            }
+            initializeWebSocket();
+        });
+
+        // Add this JavaScript after your existing script
+        document.addEventListener('DOMContentLoaded', function() {
+            const body = document.body;
+            
+            // Create modal container
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            body.appendChild(modal);
+
+            // Handle image click
+            const architectureImg = document.querySelector('.architecture-image img');
+            architectureImg.addEventListener('click', function() {
+                const modalImg = document.createElement('img');
+                modalImg.src = this.src;
+                modal.innerHTML = '';
+                modal.appendChild(modalImg);
+                modal.classList.add('active');
+            });
+
+            // Close modal on click or escape key
+            modal.addEventListener('click', function() {
+                modal.classList.remove('active');
+            });
+
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    modal.classList.remove('active');
+                }
+            });
+        });
+
+        
+
+    </script>
+
+    
+</body>
+</html>

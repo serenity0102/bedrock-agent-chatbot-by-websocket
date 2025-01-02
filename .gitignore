@@ -1,0 +1,25 @@
+# Env
+frontend/.venv/
+
+# Terraform files
+terraform/.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
+*.tfvars
+terraform/lambda.zip
+
+# Python files
+__pycache__/
+*.py[cod]
+*.so
+
+# ZIP files
+*.zip
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
