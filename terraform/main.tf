@@ -56,10 +56,8 @@ resource "aws_lambda_function" "agent_chat" {
 
   environment {
     variables = {
-      AGENT_ID     = "AHI8QU5ELZ"
-      AGENT_ALIAS  = "4DTQI5D9JW"
-      
-      # AGENT_ALIAS  = "LEK3LQJD1Q" 
+      AGENT_ID     = "YOUR AGENT ID"
+      AGENT_ALIAS  = "YOUR AGENT Alias ID"
     }
   }
 }
