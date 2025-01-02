@@ -46,7 +46,7 @@ cd lambda
 zip -r ../terraform/lambda.zip app.py
 ```
 
-3. Deploy the infrastructure using Terraform:
+3. Deploy the infrastructure using Terraform. Update your Bedrock Agent ID and Alias ID in the main.tf
 ```bash
 cd ../terraform
 terraform init
